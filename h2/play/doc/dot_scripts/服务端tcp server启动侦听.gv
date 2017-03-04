@@ -1,0 +1,32 @@
+digraph client_connnection {
+
+    graph [fontsize=10 fontname="Verdana" compound=true];
+    node [shape=record fontsize=10 fontname="Verdana"];
+
+    subgraph cluster_0 {
+        node [style=filled];
+        "main()";
+        label = "Your Class";
+        color=blue;
+    }
+
+    subgraph cluster_1 {
+        node [style=filled];
+        "main" -> "new Server()" -> "runTool" -> "createTcpServer" -> "start" -> "run";
+        label = "org.h2.tools.Server";
+        color=blue;
+    }
+
+    subgraph cluster_2 {
+        node [style=filled];
+        "start()" -> "NetUtils.createServerSocket";
+		"listen";
+        label = "org.h2.Server.TcpServer";
+        color=blue;
+    }
+	
+    // Edges between nodes render fine
+    "main()" -> "main";
+    "run" -> "listen";
+	"start" -> "start()";
+}
