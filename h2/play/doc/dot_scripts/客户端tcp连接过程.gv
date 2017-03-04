@@ -1,0 +1,45 @@
+digraph client_connnection {
+
+    graph [fontsize=10 fontname="Verdana" compound=true];
+    node [shape=record fontsize=10 fontname="Verdana"];
+
+    subgraph cluster_0 {
+        node [style=filled];
+        "getConnection";
+        label = "java.sql.DriverManager";
+        color=blue;
+    }
+
+    subgraph cluster_1 {
+        node [style=filled];
+        "connect";
+        label = "org.h2.Driver";
+        color=blue;
+    }
+
+    subgraph cluster_2 {
+        node [style=filled];
+        "JdbcConnection" "CloseWatcher.register";
+        label = "org.h2...JdbcConnection";
+        color=blue;
+    }
+	
+	subgraph cluster_3 {
+        node [style=filled];
+        "connectEmbeddedOrServer" -> "connectServer";
+		"connectServer" -> "initTransfer";
+		"initTransfer" -> "NetUtils.createSocket";
+		
+        label = "org.h2.engine.SessionRemote";
+        color=blue;
+    }
+
+    // Edges between nodes render fine
+    "getConnection" -> "connect";
+    "connect" -> "JdbcConnection";
+	"JdbcConnection" -> "connectEmbeddedOrServer";
+
+    // Edges that directly connect one cluster to another
+    //"JdbcConnection" -> "getConnection" [ltail=cluster_2 lhead=cluster_0];
+    //"NetUtils.createSocket" -> "JdbcConnection" [ltail=cluster_3 lhead=cluster_2];
+}

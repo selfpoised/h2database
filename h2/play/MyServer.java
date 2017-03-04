@@ -26,6 +26,7 @@ public class MyServer {
         list.add("-tcp");
         list.add("-tcpPort");
         list.add("5000");
+        list.add("-tcpAllowOthers");
         //list.add("-web");
         org.h2.tools.Server.main(list.toArray(new String[list.size()]));
     }
