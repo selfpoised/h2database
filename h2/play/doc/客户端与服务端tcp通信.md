@@ -1,13 +1,13 @@
 # TCP 通信
 
-### 客户端tcp调用过程
+### 1.客户端tcp调用过程
 ![客户端tcp](http://ohz440knb.bkt.clouddn.com/h2-tcp%E5%AE%A2%E6%88%B7%E7%AB%AFtcp%E8%BF%9E%E6%8E%A5%E8%BF%87%E7%A8%8B.png)
 
-### 服务端tcp调用过程
+### 2.服务端tcp调用过程
 ![客户端tcp](http://ohz440knb.bkt.clouddn.com/%E6%9C%8D%E5%8A%A1%E7%AB%AFtcp%E4%BE%A6%E5%90%AC%E8%BF%87%E7%A8%8B.png)
 
-### 通信过程
-1. 客户端初始化
+### 3.通信过程
+##### 1. 客户端初始化
 client:
 ```
 int minTcpVersion; //6
@@ -38,7 +38,7 @@ STATUS_OK
 	    int clientVersion
 ```
 
-2. session id
+##### 2. session id
 client:
 ```
 int session_set_id
@@ -59,7 +59,7 @@ STATUS_OK
 	    boolean autoCommit
 ```
 
-3. prepare阶段
+##### 3. prepare阶段
 query 和 update具体调用之前会先prepare
 client:
 ```
@@ -75,7 +75,7 @@ int paramCount
 Metadata[] params
 ```
 
-4. executeQuery
+##### 4. executeQuery
 client:
 ```
 int command
@@ -101,7 +101,7 @@ STATUS_OK
         int rowCount
 ```
 
-5. RESULT_FETCH_ROWS
+##### 5. RESULT_FETCH_ROWS
 该命令是紧接着executeQuery成功后，由客户端自动发出的，查询成功后，自然要求结果
 client:
 ```
@@ -118,7 +118,7 @@ Value[]    values // a row of columns.length
 }
 ```
 
-6. executeUpdate
+##### 6. executeUpdate
 client:
 ```
 int command //COMMAND_EXECUTE_UPDATE
