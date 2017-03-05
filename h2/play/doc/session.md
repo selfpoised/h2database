@@ -42,3 +42,14 @@ Session(Database database, User user, int id)
 
 ### h2 console (command line)
 使用上述工具可以连接：jdbc:h2:mem:management_db_5000，但是查询sessions表，内容貌似不一致？待进一步研究
+
+### session id
+sessionId = StringUtils.convertBytesToHex(MathUtils.secureRandomBytes(32))
+可见sessionId是32字节随机数转换为64字节字符串而成，所以是unique的，每个session的id是不同的。
+
+感觉用处不是很大，目前仅在该特殊情况下：
+```
+	TcpServerThread.run->
+    	server.cancelStatement(targetSessionId, statementId)
+```
+用以取消正在执行的命令
