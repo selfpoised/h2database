@@ -8,11 +8,12 @@ public class JDBCTest {
     public static void main(String[] args) throws Exception {
         //Class.forName("org.h2.Driver");
 
-        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb", "sa", "");
+        // Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb", "DBA", "");
+        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb", "SA", "");
         Statement stmt = conn.createStatement();
-        stmt.executeUpdate("DROP TABLE IF EXISTS my_table");
-        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS my_table(name varchar(20))");
-        stmt.executeUpdate("INSERT INTO my_table(name) VALUES('wh')");
+        //stmt.executeUpdate("DROP TABLE IF EXISTS my_table");
+        //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS my_table(name varchar(20))");
+        //stmt.executeUpdate("INSERT INTO my_table(name) VALUES('wh')");
 
         ResultSet rs = stmt.executeQuery("SELECT name FROM my_table");
         while(rs.next()){

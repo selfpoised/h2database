@@ -9,11 +9,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -68,6 +64,7 @@ public class TcpServer implements Service {
     private Connection managementDb;
     private PreparedStatement managementDbAdd;
     private PreparedStatement managementDbRemove;
+    private PreparedStatement managementDbQuery;
     private String managementPassword = "";
     private Thread listenerThread;
     private int nextThreadId;
@@ -103,6 +100,8 @@ public class TcpServer implements Service {
                     "INSERT INTO SESSIONS VALUES(?, ?, ?, NOW())");
             managementDbRemove = conn.prepareStatement(
                     "DELETE FROM SESSIONS WHERE ID=?");
+            managementDbQuery = conn.prepareStatement(
+                    "SELECT * FROM SESSIONS");
         }
         SERVERS.put(port, this);
     }
@@ -133,6 +132,12 @@ public class TcpServer implements Service {
             managementDbAdd.setString(2, url);
             managementDbAdd.setString(3, user);
             managementDbAdd.execute();
+
+            System.out.println("After adding " + id + ", Current active sessions inside " + getManagementDbName(port));
+            ResultSet rs = managementDbQuery.executeQuery();
+            while(rs.next()){
+                System.out.println("    " + rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4));
+            }
         } catch (SQLException e) {
             DbException.traceThrowable(e);
         }
@@ -147,6 +152,12 @@ public class TcpServer implements Service {
         try {
             managementDbRemove.setInt(1, id);
             managementDbRemove.execute();
+
+            System.out.println("After removing " + id + ", Current active sessions inside " + getManagementDbName(port));
+            ResultSet rs = managementDbQuery.executeQuery();
+            while(rs.next()){
+                System.out.println("    " + rs.getString(1) + " " + rs.getString(2) + " " + rs.getString(3) + " " + rs.getString(4));
+            }
         } catch (SQLException e) {
             DbException.traceThrowable(e);
         }
