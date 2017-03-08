@@ -5,6 +5,25 @@ import org.h2.mvstore.*;
  */
 public class XMVStore {
     public static void main(String[] args) throws Exception {
+        MVStore s = MVStore.open("test12");
+        MVMap<Integer, String> map = s.openMap("data");
+        MVMap<Integer, String> map2 = s.openMap("data2");
+        for (int i = 0; i < 400; i++) {
+            map.put(i, "Hello");
+        }
+        map2.put(0, "Hello");
+        s.commit();
+        for (int i = 0; i < 100; i++) {
+            map.put(i, "Hi");
+        }
+        s.commit();
+        s.close();
+
+
+        MVStoreTool.dump("test12",true);
+    }
+
+    public static void main2(String[] args) throws Exception {
         // open the store (in-memory if fileName is null)
         MVStore s = MVStore.open("test11");
 
@@ -45,6 +64,6 @@ public class XMVStore {
         s.close();
 
 
-        MVStoreTool.dump("test11",true);
+        MVStoreTool.dump("test11",false);
     }
 }

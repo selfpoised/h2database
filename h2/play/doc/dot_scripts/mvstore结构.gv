@@ -1,0 +1,95 @@
+digraph MVStore {
+
+graph [
+	label="MVStore文件存储格式,h2database:v1.4.193"
+	rankdir = "LR",
+	fontname="FangSong"
+	fontsize = 24
+];
+
+node [
+	fontname="FangSong",
+	fontsize = "20",
+	shape = "ellipse"
+];
+
+edge [
+	fontname="FangSong"
+];
+
+subgraph cluster_0 {
+		node [fontname="FangSong"];
+		label = "MVStore文件格式";
+		"node" [
+			label = "<f0> file header 1| <f1> file header 2 | <f2> chunk | <f3> ...| <f4>chunk"
+			shape = "record"
+			color = "red"
+			fontsize = 24
+		];
+		"node_file_header" [
+			label = "<f0>eg:H:2,blockSize:1000,created:15aad060df5,format:1,fletcher:444f937b\l|file header:exactly one block,4096 bytes\l|H: The entry 'H:2' stands for the the H2 database.\lblockSize: The block size of the file; currently always hex 1000, which is decimal 4096.\lcreated: The number of milliseconds since 1970 when the file was created.\lformat: The file format number. Currently 1.\lfletcher: The Fletcher-32 checksum of the header.\l"
+			shape = "record"
+			fontsize = 16
+		];
+
+		"node":f0 -> "node_file_header":f0 [
+			id = 0
+		];
+		"node":f1 -> "node_file_header":f0 [
+			id = 1
+		];
+		color=green
+}
+
+subgraph cluster_1 {
+		node [fontname="FangSong"];
+		label = "chunk格式: n blocks";
+		"node_chunk" [
+			label = "<f0> header| <f1> page | <f2> ... | <f3> page| <f4>footer"
+			shape = "record"
+			color = "red"
+			fontsize = 24
+		];
+
+		"node_chunk_header" [
+			label = "<f0>eg:chunk:1,block:2,len:1,map:1,max:1260,next:3,pages:4,root:4000039204,time:2c,version:1\l|chunkHeader:最大1024 bytes\l|chunk: The chunk id.\lblock: The first block of the chunk (multiply by the block size to get the position in the file).\llen: The size of the chunk in number of blocks.\lmap: The id of the newest map; incremented when a new map is created.\lmax: The sum of all maximum page sizes (see page format).\lnext: The predicted start block of the next chunk.\lpages: The number of pages in the chunk.\lroot: The position of the metadata root page (see page format).\ltime: The time the chunk was written, in milliseconds after the file was created.\lversion: The version this chunk represents.\lfletcher: The checksum of the footer.\l"
+			shape = "record"
+			fontsize = 16
+		];
+
+		"node_chunk_footer" [
+			label = "<f0>eg:chunk:1,block:2,version:1,fletcher:84d0d5f6\l|chunkFooter:128 bytes\l"
+			shape = "record"
+			fontsize = 16
+		];
+
+		"node_chunk":f0 -> "node_chunk_header":f0 [
+			id = 3
+		];
+		"node_chunk":f4 -> "node_chunk_footer":f0 [
+			id = 4
+		];
+		color=green
+	}
+
+subgraph cluster_2 {
+		node [fontname="FangSong"];
+		label = "page格式: 不定长";
+
+		"node_page" [
+			label = "<f0>length (int): Length of the page in bytes\l| <f1>checksum (short)\l| <f2>mapId (variable size int): The id of the map this page belongs to\l| <f3>len (variable size int): The number of keys in the page\l| <f4>type (byte): The page type (0 for leaf page, 1 for internal node\l|<f5>children (array of long; internal nodes only): The position of the children\l|<f6>childCounts (array of variable size long; internal nodes only)\l|<f7>keys (byte array): All keys, stored depending on the data type\l|<f8>values (byte array; leaf pages only): All values, stored depending on the data type\l"
+			shape = "record"
+			color = "red"
+			fontsize = 16
+		];
+		color=green
+}
+
+"node":f2 -> "node_chunk":f0 [
+			id = 5
+		];
+		
+"node_chunk":f1 -> "node_page":f0 [
+			id = 6
+		];
+}
