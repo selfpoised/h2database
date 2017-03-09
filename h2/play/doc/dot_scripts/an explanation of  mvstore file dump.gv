@@ -1,0 +1,90 @@
+digraph MVStore_file_dump {
+
+graph [
+	label="MVStore file dump,h2database:v1.4.193"
+	rankdir = "LR"
+	fontname="FangSong"
+	fontsize = 24
+];
+
+node [
+	fontname="FangSong",
+	fontsize = "20",
+	shape = "ellipse"
+];
+
+edge [
+	fontname="FangSong"
+];
+
+subgraph cluster_output {
+		node [fontname="FangSong"];
+		label = "output";
+		"output" [
+			label = "<f0>File mvstore_dump, 16384 bytes, 0 MB\l" + 
+					"0000 fileHeader H:2,blockSize:1000,created:15ab1c2c7da,format:1,fletcher:3c34f843\l" + 
+					"1000 fileHeader H:2,blockSize:1000,created:15ab1c2c7da,format:1,fletcher:3c34f843\l" +
+					"|" + 
+					"<f1>2000 chunkHeader chunk:1,block:2,len:1,map:1,max:1260,next:3,pages:4,root:4000039204,time:2d,version:1\l" + 
+					"+0094 node, map 1, 2 entries, 32 bytes, maxLen 20\l" + 
+					"\	140 children @ chunk 1 +00b4\l" + 
+					"\	260 children @ chunk 1 +051a\l" + 
+					"+00b4 leaf, map 1, 140 entries, 1126 bytes, maxLen 600\l" + 
+					"+051a leaf, map 1, 260 entries, 2350 bytes, maxLen c00\l" + 
+					"+0e48 leaf, map 0, 3 entries, 55 bytes, maxLen 40\l" + 
+					"\	map.1 = name:data\l" + 
+					"\	name.data = 1\l" + 
+					"\	root.1 = 4000002501\l" + 
+					"map 0: 55 bytes, 1%\l" + 
+					"map 1: 3508 bytes, 98%\l" + 
+					"+0f80 chunkFooter chunk:1,block:2,version:1,fletcher:84d0d5f6\l" + 
+					"|" + 
+					"<f2>3000 chunkHeader chunk:2,block:3,len:1,map:1,max:4e0,next:4,pages:3,root:800000fb8a,time:3c,version:2\l" +
+					"+0094 node, map 1, 2 entries, 32 bytes, maxLen 20\l" +
+					"\	140 children @ chunk 2 +00b4\l" +
+					"\	260 children @ chunk 1 +051a\l" +
+					"+00b4 leaf, map 1, 140 entries, 826 bytes, maxLen 400\l" +
+					"+03ee leaf, map 0, 4 entries, 173 bytes, maxLen c0\l" +
+					"\	chunk.1 = chunk:1,block:2,len:1,liveMax:c00,livePages:1,map:1,max:1260,next:3,pages:4,root:4000039204,time:2d,version:1\l" +
+					"\	map.1 = name:data\l" +
+					"\	name.data = 1\l" +
+					"\	root.1 = 8000002501\l" +
+					"map 0: 173 bytes, 16%\l" +
+					"map 1: 858 bytes, 83%\l" +
+					"+0f80 chunkFooter chunk:2,block:3,version:2,fletcher:95d0d8f6\l" + 
+					"|" + 
+					"<f3>4000 eof\l" + 
+					"\n" + 
+					"page size total: 4594 bytes, page count: 7, average page size: 656 bytes\l" + 
+					"map 0: 228 bytes, 4%\l" +
+					"map 1: 4366 bytes, 95%\l"
+			shape = "record"
+			fontsize = 16
+		];
+		color=green
+	}
+
+subgraph cluster_source_code {
+		node [fontname="FangSong"];
+		label = "source code";
+		"source_code" [
+			label = "MVStore s = MVStore.open(\"mvstore_dump\");\l" +
+					"MVMap\<Integer, String\> map = s.openMap(\"data\");\l" +
+					"for (int i = 0; i \< 400; i++) \{\l" +
+					"\	map.put(i, \"Hello\");\l" +
+					"\}\l" +
+					"s.commit();\l" +
+					"for (int i = 0; i \< 100; i++) \{\l" +
+					"\	map.put(i, \"Hi\");\l" +
+					"\}\l" +
+					"s.commit();\l" +
+					"s.close();\l" +
+					"MVStoreTool.dump(\"mvstore_dump\",true);\l"
+			shape = "record"
+			fontsize = 16
+		];
+		color=green
+	}
+	
+"source_code" -> "output":f0 [id = 1];
+}
