@@ -1,7 +1,7 @@
 digraph MVStore {
 
 graph [
-	label="MVStore文件存储格式,h2database:v1.4.193"
+	label="MVStore storage format,h2database:v1.4.193"
 	rankdir = "LR",
 	fontname="FangSong"
 	fontsize = 24
@@ -19,7 +19,7 @@ edge [
 
 subgraph cluster_0 {
 		node [fontname="FangSong"];
-		label = "MVStore文件格式";
+		label = "file format";
 		"node" [
 			label = "<f0> file header 1| <f1> file header 2 | <f2> chunk | <f3> ...| <f4>chunk"
 			shape = "record"
@@ -43,7 +43,7 @@ subgraph cluster_0 {
 
 subgraph cluster_1 {
 		node [fontname="FangSong"];
-		label = "chunk格式: n blocks";
+		label = "chunk format: n blocks";
 		"node_chunk" [
 			label = "<f0> header| <f1> page | <f2> ... | <f3> page| <f4>footer"
 			shape = "record"
@@ -69,12 +69,18 @@ subgraph cluster_1 {
 		"node_chunk":f4 -> "node_chunk_footer":f0 [
 			id = 4
 		];
+		"node_chunk_last_page" [
+			label = "<f0>last page:\l\	Metadata Map root page\l"
+			shape = "record"
+			fontsize = 16
+		];
+		"node_chunk_last_page" -> "node_chunk":f3;
 		color=green
 	}
 
 subgraph cluster_2 {
 		node [fontname="FangSong"];
-		label = "page格式: 不定长";
+		label = "page format: variable length";
 
 		"node_page" [
 			label = "<f0>length (int): Length of the page in bytes\l| <f1>checksum (short)\l| <f2>mapId (variable size int): The id of the map this page belongs to\l| <f3>len (variable size int): The number of keys in the page\l| <f4>type (byte): The page type (0 for leaf page, 1 for internal node\l|<f5>children (array of long; internal nodes only): The position of the children\l|<f6>childCounts (array of variable size long; internal nodes only)\l|<f7>keys (byte array): All keys, stored depending on the data type\l|<f8>values (byte array; leaf pages only): All values, stored depending on the data type\l"
