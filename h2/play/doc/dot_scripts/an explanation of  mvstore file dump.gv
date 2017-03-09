@@ -73,7 +73,7 @@ subgraph cluster_output {
 			fontsize = 16
 			color = red
 		];
-		"output" -> "output_hex" [style=dotted,color=green];
+		"output":f0 -> "output_hex" [color=green];
 		
 		"output_chunk_header_root" [
 			label = "<f0>2000 chunkHeader......root:4000039204\l" +
@@ -94,7 +94,7 @@ subgraph cluster_output {
 			fontsize = 16
 			color = red
 		];
-		"output":f1 -> "output_chunk_header_root" [style=dotted,color=green];
+		"output":f1 -> "output_chunk_header_root" [color=green];
 		
 		"output_chunk_meta_root" [
 			label = "<f0>root.1 = 4000002501\l" +
@@ -115,7 +115,7 @@ subgraph cluster_output {
 			fontsize = 16
 			color = red
 		];
-		"output":f1 -> "output_chunk_meta_root" [style=dotted,color=green];
+		"output":f1 -> "output_chunk_meta_root" [color=green];
 		
 		"output_chunk_meta_root2" [
 			label = "<f0>root.1 = 8000002501\l" +
@@ -136,7 +136,7 @@ subgraph cluster_output {
 			fontsize = 16
 			color = red
 		];
-		"output":f2 -> "output_chunk_meta_root2" [style=dotted,color=green];
+		"output":f2 -> "output_chunk_meta_root2" [color=green];
 		
 		"output_chunk_map" [
 			label = "<f0>+0e48 leaf, map 0...\l" +
@@ -149,7 +149,7 @@ subgraph cluster_output {
 			fontsize = 16
 			color = red
 		];
-		"output" -> "output_chunk_map" [style=dotted,color=green];
+		"output":f0 -> "output_chunk_map" [color=green];
 	}
 
 subgraph cluster_source_code {
