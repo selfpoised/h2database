@@ -80,12 +80,12 @@ subgraph cluster_output {
 					"|" + 
 					"<f1>root: The position of the metadata root page\l" + 
 					"|" +
-					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, 5 bits for the length code, 1 bit for the page type (leaf or internal node\l" +
+					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, \l5 bits for the length code, 1 bit for the page type (leaf or internal node)\l" +
 					"|" +
 					"<f3>40\         00\         03\         92\          04\l" + 
 					"0100,0000  0000,0000  0000,0011  1001,0010   0000,0100\l" + 
 					"type:0\l" + 
-					"length:00,010 = 2 (a number from 0 to 31, where 0 means the maximum length of the page is 32 bytes, 1 means 48 bytes, 2: 64, 3: 96, 4: 128, 5: 192...)\l" + 
+					"length:00,010 = 2 (a number from 0 to 31, where 0 means the maximum length of the page is\l 32 bytes, 1 means 48 bytes, 2: 64, 3: 96, 4: 128, 5: 192...)\l" + 
 					"offset:00000000 00000000 00001110   01001000 = e48\l" + 
 					"chunk id:1\l" + 
 					"|" +
@@ -101,7 +101,7 @@ subgraph cluster_output {
 					"|" + 
 					"<f1>root.1: The root position of map 1\l" + 
 					"|" +
-					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, 5 bits for the length code, 1 bit for the page type (leaf or internal node\l" +
+					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, \l5 bits for the length code, 1 bit for the page type (leaf or internal node)\l" +
 					"|" +
 					"<f3>40\        00\          00\         25\         01\l" + 
 					"0100,0000 0000,0000   0000,0000  0010,0101  0000,0001\l" + 
@@ -122,7 +122,7 @@ subgraph cluster_output {
 					"|" + 
 					"<f1>root.1: The root position of map 1\l" + 
 					"|" +
-					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, 5 bits for the length code, 1 bit for the page type (leaf or internal node\l" +
+					"<f2>26 bits for the chunk id, 32 bits for the offset within the chunk, \l5 bits for the length code, 1 bit for the page type (leaf or internal node)\l" +
 					"|" +
 					"<f3>80\        00\          00\         25\         01\l" + 
 					"1000,0000 0000,0000   0000,0000  0010,0101  0000,0001\l" + 
