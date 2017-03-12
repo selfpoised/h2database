@@ -135,6 +135,11 @@ public class TestMVStore extends TestBase {
         map.put("1", "Hello");
         store.commit();
         store.removeMap(map);
+        /*
+          this is counter-intuitive
+          to rollback data inside map, use map.clear() instead of removeMap(map)
+          reference: https://groups.google.com/forum/#!topic/h2-database/M3SzKbRUeTw
+         */
         store.rollback();
         assertTrue(store.hasMap("test"));
         map = store.openMap("test");
@@ -174,11 +179,13 @@ public class TestMVStore extends TestBase {
                 open();
         MVMap<String, String> map = store.openMap("test");
         assertFalse(map.isVolatile());
+        // how does it implemented volatile?
         map.setVolatile(true);
         assertTrue(map.isVolatile());
         map.put("1", "Hello");
         assertEquals("Hello", map.get("1"));
         assertEquals(1, map.size());
+        // there is commit logic inside close
         store.close();
         store = new MVStore.Builder().
                 fileName(fileName).
@@ -795,8 +802,10 @@ public class TestMVStore extends TestBase {
         assertEquals("world", map.getName());
         s.rollbackTo(old);
         assertEquals("hello", map.getName());
+        assertTrue(10==map.get(1));
         s.rollbackTo(0);
         assertTrue(map.isClosed());
+        assertTrue(!s.hasMap("hello"));
         s.close();
     }
 
@@ -875,6 +884,8 @@ public class TestMVStore extends TestBase {
         s.close();
         s = new MVStore.Builder().fileName(fileName).readOnly().open();
         assertTrue(s.getFileStore().isReadOnly());
+//        MVStore s1 = new MVStore.Builder().fileName(fileName).readOnly().open();
+//        s1.close();
         s.close();
     }
 
@@ -1158,9 +1169,11 @@ public class TestMVStore extends TestBase {
         }
         Iterator<Integer> it = map.keySet().iterator();
         s.commit();
+
         for (int i = 0; i < len; i += 2) {
             map.remove(i);
         }
+
         int count = 0;
         while (it.hasNext()) {
             it.next();

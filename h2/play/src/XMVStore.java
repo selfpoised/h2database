@@ -10,8 +10,10 @@ public class XMVStore {
         MVStore s = MVStore.open("mvstore_dump");
 
         MVMap<Integer, String> map = s.openMap("data");
+        MVMap<Integer, String> map2 = s.openMap("data2");
         for (int i = 0; i < 400; i++) {
             map.put(i, "Hello");
+            map2.put(i, "Hello");
         }
         s.commit();
         for (int i = 0; i < 100; i++) {

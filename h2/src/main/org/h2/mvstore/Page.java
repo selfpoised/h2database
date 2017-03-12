@@ -190,6 +190,12 @@ public class Page {
         buff = fileStore.readFully(filePos, length);
         Page p = new Page(map, 0);
         p.pos = pos;
+        // pos is a long, and page pointer
+        // Pointers to pages are stored as a long,
+        // using a special format: 26 bits for the chunk id,
+        // 32 bits for the offset within the chunk,
+        // 5 bits for the length code, 1 bit for the page type
+        // (leaf or internal node)
         int chunkId = DataUtils.getPageChunkId(pos);
         int offset = DataUtils.getPageOffset(pos);
         p.read(buff, chunkId, offset, maxLength);
