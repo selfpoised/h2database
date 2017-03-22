@@ -6,7 +6,7 @@
 package org.h2.util;
 
 /**
- * A list of bits.
+ * A list of bits, can be indexed
  */
 public final class BitField {
 
@@ -16,11 +16,18 @@ public final class BitField {
     private long[] data;
     private int maxLength;
 
+    public static void main(String[] args){
+        BitField bf = new BitField(16);
+        Boolean b = bf.get(4);
+    }
+
     public BitField() {
         this(64);
     }
 
     public BitField(int capacity) {
+        // actual needs are just one bit, but divide by 8
+        // not by 64 is to avoid frequent expansion
         data = new long[capacity >>> 3];
     }
 
@@ -34,7 +41,7 @@ public final class BitField {
         int i = fromIndex >> ADDRESS_BITS;
         int max = data.length;
         for (; i < max; i++) {
-            if (data[i] == -1) {
+            if (data[i] == -1) {// -1 means all 1s, all bits used
                 continue;
             }
             int j = Math.max(fromIndex, i << ADDRESS_BITS);
@@ -54,6 +61,7 @@ public final class BitField {
      * @return true if the bit is enabled
      */
     public boolean get(int i) {
+        // a long takes 8 bytes and 64 bit, so right shift 6 times
         int addr = i >> ADDRESS_BITS;
         if (addr >= data.length) {
             return false;
@@ -73,6 +81,11 @@ public final class BitField {
         if (addr >= data.length) {
             return 0;
         }
+
+        // since i is a multiple of 8, (7 << 3) = 0111,000
+        // then i &(7 << 3) will be 8,16...56, which are possible
+        // remainder of i, then data[addr] will first shift the remainder
+        // bits, if data[addr] is a multiple of 64, it does not have to shift
         return (int) (data[addr] >>> (i & (7 << 3)) & 255);
     }
 
@@ -120,6 +133,9 @@ public final class BitField {
     }
 
     private static long getBitMask(int i) {
+        // ADDRESS_MASK is 0x3F=0011,1111
+        // actually this is to get the remainder
+        // which is the exact bit index of a long in data[] of a certain index
         return 1L << (i & ADDRESS_MASK);
     }
 

@@ -7,22 +7,22 @@ import org.h2.mvstore.*;
  */
 public class XMVStore {
     public static void main(String[] args) throws Exception {
-        MVStore s = MVStore.open("mvstore_dump");
+//        MVStore s = MVStore.open("mvstore_dump");
+//
+//        MVMap<Integer, String> map = s.openMap("data");
+//        MVMap<Integer, String> map2 = s.openMap("data2");
+//        for (int i = 0; i < 400; i++) {
+//            map.put(i, "Hello");
+//            map2.put(i, "Hello");
+//        }
+//        s.commit();
+//        for (int i = 0; i < 100; i++) {
+//            map.put(i, "Hi");
+//        }
+//        s.commit();
+//        s.close();
 
-        MVMap<Integer, String> map = s.openMap("data");
-        MVMap<Integer, String> map2 = s.openMap("data2");
-        for (int i = 0; i < 400; i++) {
-            map.put(i, "Hello");
-            map2.put(i, "Hello");
-        }
-        s.commit();
-        for (int i = 0; i < 100; i++) {
-            map.put(i, "Hi");
-        }
-        s.commit();
-        s.close();
-
-        MVStoreTool.dump("mvstore_dump",true);
+        MVStoreTool.dump("mydb1.mv.db",true);
     }
 
     public static void main2(String[] args) throws Exception {

@@ -12,17 +12,31 @@ public class JDBCTest {
 
         // Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb", "DBA", "");
         // JdbcConnection
-        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb1;TRACE_LEVEL_SYSTEM_OUT=3", "SA", "");
+        // add 'MV_STORE=FALSE' to enable old pagestore
+        Connection conn = DriverManager.getConnection("jdbc:h2:tcp://localhost:5000/~/mydb1;TRACE_LEVEL_SYSTEM_OUT=3;", "SA", "");
         // JdbcStatement
         Statement stmt = conn.createStatement();
-        stmt.executeUpdate("DROP TABLE IF EXISTS my_table");
-        stmt.executeUpdate("CREATE TABLE IF NOT EXISTS my_table(name varchar(20))");
-        stmt.executeUpdate("INSERT INTO my_table(name) VALUES('wh')");
+//        stmt.executeUpdate("DROP TABLE IF EXISTS my_table");
+        //stmt.executeUpdate("CREATE TABLE IF NOT EXISTS my_table(name varchar(20), first varchar(10),id int)");
+//        int j = 1;
+//        for(int i=0;i<900000;i++){
+//            if(i % 1000 == 0){
+//                j++;
+//            }
+//            String v = String.format("VALUES('wh%d','hello%d',%d)",j,j,j);
+//            stmt.executeUpdate("INSERT INTO my_table(name,first,id) " + v);
+//        }
 
-        ResultSet rs = stmt.executeQuery("SELECT name FROM my_table");
+        int i=0;
+        ResultSet rs = stmt.executeQuery("SELECT * FROM my_table where id < 200");
+        //ResultSet rs = stmt.executeQuery("SELECT * FROM PUBLIC.SYS");
         while(rs.next()){
-            System.out.println(rs.getString(1));
+            //System.out.println(rs.getString(1));
+            i++;
+            System.out.println(rs.getString(1) + "," + rs.getString(2) + "," + rs.getInt(3));
         }
+
+        System.out.println(i + " records");
 
         stmt.close();
         conn.close();

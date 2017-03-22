@@ -13,3 +13,6 @@ test.out.txt
 .idea/
 *.log
 target/
+classVisaulizer.xml
+../mvstore_dump
+../mydb1.mv.db
