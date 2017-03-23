@@ -28,7 +28,7 @@ public class JDBCTest {
 //        }
 
         int i=0;
-        ResultSet rs = stmt.executeQuery("SELECT * FROM my_table where id < 200");
+        ResultSet rs = stmt.executeQuery("SELECT * FROM my_table where id < 10");
         //ResultSet rs = stmt.executeQuery("SELECT * FROM PUBLIC.SYS");
         while(rs.next()){
             //System.out.println(rs.getString(1));
