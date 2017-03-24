@@ -1,0 +1,138 @@
+CREATE ALIAS EMP_DEPT_ID AS $$
+String emp_dept_id(Connection conn, int employee_id) throws SQLException {
+        String query = "select max(from_date) from dept_emp where emp_no = " + employee_id;
+        ResultSet rs = conn.createStatement().executeQuery(query);
+        String maxDate = "";
+        while(rs.next()){
+            maxDate = rs.getDate(1).toString();
+            break;
+        }
+
+        if(!maxDate.isEmpty()){
+            query = "select dept_no from dept_emp where emp_no = " + employee_id + " and from_date = '" + maxDate + "' limit 1";
+            rs = conn.createStatement().executeQuery(query);
+            while(rs.next()){
+                return rs.getString(1);
+            }
+        }
+
+        return "";
+    }
+$$;
+
+CREATE ALIAS EMP_DEPT_ID2 AS $$
+ResultSet emp_dept_id2(Connection conn, int employee_id) throws SQLException {
+        String query = "select max(from_date) from dept_emp where emp_no = " + employee_id;
+        ResultSet rs = conn.createStatement().executeQuery(query);
+        String maxDate = null;
+        while(rs.next()){
+            maxDate = rs.getDate(1).toString();
+            break;
+        }
+
+        if(!maxDate.isEmpty()){
+            String query0 = "select dept_no from dept_emp where emp_no = " + employee_id + " and from_date = '" + maxDate + "' limit 1";
+            ResultSet rs0 = conn.createStatement().executeQuery(query0);
+            return rs0;
+        }
+
+        return null;
+    }
+$$;
+
+
+CREATE ALIAS EMP_DEPT_NAME AS $$
+String emp_dept_name(Connection conn, int employee_id) throws SQLException {
+        String emp_dept_id = emp_dept_id(conn,employee_id);
+        if(!emp_dept_id.isEmpty()){
+            String query = "select dept_name from departments where dept_no = " + emp_dept_id;
+            ResultSet rs = conn.createStatement().executeQuery(query);
+            while(rs.next()){
+                return rs.getDate(1).toString();
+            }
+        }
+
+        return "";
+    }
+$$;
+
+CREATE ALIAS EMP_NAME AS $$
+String emp_name(Connection conn, int employee_id) throws SQLException {
+        String query = "select concat(first_name, ' ', last_name) as name from employees where emp_no = " + employee_id;
+        ResultSet rs = conn.createStatement().executeQuery(query);
+        while(rs.next()){
+            return rs.getString(1);
+        }
+
+        return "";
+    }
+$$;
+
+
+CREATE ALIAS CURRENT_MANAGER AS $$
+String current_manager(Connection conn, String dept_id) throws SQLException {
+        String query = "select max(from_date) from  dept_manager  where  dept_no = '" + dept_id + "'";
+        ResultSet rs = conn.createStatement().executeQuery(query);
+        String maxDate = "";
+        while(rs.next()){
+            maxDate = rs.getDate(1).toString();
+            break;
+        }
+
+        if(!maxDate.isEmpty()){
+            query = String.format("select emp_name(emp_no) from  dept_manager where  dept_no = '%s' and from_date = '%s' limit 1",dept_id,maxDate);
+            rs = conn.createStatement().executeQuery(query);
+            while(rs.next()){
+                return rs.getString(1);
+            }
+        }
+
+        return "";
+    }
+$$;
+
+
+CREATE ALIAS SHOW_DEPARTMENTS AS $$
+void show_departments(Connection conn) throws SQLException {
+        Statement stmt = conn.createStatement();
+
+        stmt.executeUpdate("DROP TABLE IF EXISTS department_max_date;");
+        stmt.executeUpdate("DROP TABLE IF EXISTS department_people;");
+        stmt.executeUpdate("CREATE TEMPORARY TABLE department_max_date\n" +
+                "    (\n" +
+                "        emp_no int not null primary key,\n" +
+                "        dept_from_date date not null,\n" +
+                "        dept_to_date  date not null,\n" +
+                "        KEY (dept_from_date, dept_to_date)\n" +
+                "    );");
+        stmt.executeUpdate("INSERT INTO department_max_date\n" +
+                "    SELECT\n" +
+                "        emp_no, max(from_date), max(to_date) \n" +
+                "    FROM\n" +
+                "        dept_emp\n" +
+                "    GROUP BY\n" +
+                "        emp_no;");
+        stmt.executeUpdate("CREATE TEMPORARY TABLE department_people \n" +
+                "    (\n" +
+                "        emp_no int not null,\n" +
+                "        dept_no char(4) not null,\n" +
+                "        primary key (emp_no, dept_no)\n" +
+                "    );");
+        stmt.executeUpdate("insert into department_people \n" +
+                "    select dmd.emp_no, dept_no\n" +
+                "    from \n" +
+                "        department_max_date dmd \n" +
+                "        inner join dept_emp de \n" +
+                "            on dmd.dept_from_date=de.from_date \n" +
+                "            and dmd.dept_to_date=de.to_date\n" +
+                "            and dmd.emp_no=de.emp_no;");
+
+        stmt.executeQuery("SELECT  v.dept_no,dept_name,manager, count(*)\n" +
+                "              from v_full_departments  as v\n" +
+                "                   inner join department_people on department_people.dept_no=v.dept_no\n" +
+                "              group by v.dept_no");
+
+        stmt.executeUpdate("DROP TABLE department_max_date;");
+        stmt.executeUpdate("DROP TABLE department_people;");
+    }
+$$;
