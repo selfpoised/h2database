@@ -1,6 +1,7 @@
-package src;
-
 import org.h2.mvstore.*;
+
+import java.io.File;
+import java.io.PrintWriter;
 
 /**
  * Created by wanghao on 2017/3/7.
@@ -22,7 +23,8 @@ public class XMVStore {
 //        s.commit();
 //        s.close();
 
-        MVStoreTool.dump("mydb1.mv.db",true);
+        //MVStoreTool.dump("file_change_demo",true);
+        MVStoreTool.dump("C:\\Users\\wanghao\\mydb.mv.db",new PrintWriter(new File("dump_mydb.mv.db")),true);
     }
 
     public static void main2(String[] args) throws Exception {

@@ -760,6 +760,8 @@ public class Database implements DataHandler {
         Collections.sort(records);
         synchronized (systemSession) {
             for (MetaRecord rec : records) {
+                // MVTableEngine.Store.tableMap中类似table.3->public.tableX
+                // 即在此处生成
                 rec.execute(this, systemSession, eventListener);
             }
         }
